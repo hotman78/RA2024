@@ -1,0 +1,20 @@
+# problem id (it is used for the name of output html file)
+id = "A"
+sample_path = "./rime-out/tests/"
+ignore_samples = [
+    "0_sample_*"
+]
+
+# output params
+params_path = "./tests/constraints.hpp"
+
+# path to statements
+
+# WRITE CONSTRAINTS HERE
+[constraints]
+    MIN_N = 1
+    MAX_N = 1000
+    MIN_M = 1
+    MAX_M = 1000
+    MIN_A = 0
+    MAX_A = 100000000
