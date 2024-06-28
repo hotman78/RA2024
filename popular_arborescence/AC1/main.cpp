@@ -1,10 +1,13 @@
 #include <bits/stdc++.h>
+#include <string>
 using namespace std;
 #include "./union_find.hpp"
-
+#include"./Visualizer.cpp"
 #include <utility>
 using lint = long long;
 #define rep(i, n) for (lint i = 0; i < (lint)(n); i++)
+
+Visualizer vis(0);
 
 constexpr lint SZ = 1000;
 int rank(int n, set< pair< int, int > > v) {
@@ -116,6 +119,8 @@ set< pair< int, int > > popular_arborescence(
                 }
                 if (ok) {
                     E.emplace(mx[i], e.first, e.second);
+                    vis.change_style(e.first, e.second,"dashed");
+                    vis.out();
                 }
             }
             // 次に外側
@@ -135,11 +140,14 @@ set< pair< int, int > > popular_arborescence(
                 }
                 if (ok) {
                     E.emplace(mx[i] - 1, e.first, e.second);
+                    vis.change_style(e.first, e.second,"dashed");
+                    vis.out();
                 }
             }
         }
         return E;
     };
+
     auto Compute_I = [&](set< tuple< int, int, int > > E) {
         set< pair< int, int > > I;
         vector< char > used(n);
@@ -150,12 +158,19 @@ set< pair< int, int > > popular_arborescence(
                 used[t] = 1;
                 // cerr<<idx<<" "<<s<<" "<<t<<endl;
                 I.emplace(s, t);
+                vis.change_style(s, t,"solid");
+                vis.out();
             }
         }
         // cerr<<endl;
         return I;
     };
+    vector<int>r(n);
+    rep(i,n)r[i]=rand()%255;
+    r[0]=0;
     while (p < n) {
+        // cerr<<"a"<<endl;
+        vis.reset_style();
         // Compute E(C)
         auto E = Compute_E_C();
         // Find branching I
@@ -171,10 +186,17 @@ set< pair< int, int > > popular_arborescence(
             }
         }
         if (k == -1) {
+            // cerr<<"test"<<endl;
+            for(auto [s,t]:edges){
+                if(vis.style[vis.id[{s,t}]]=="dashed"){
+                    vis.change_style(s, t, "dotted");
+                }
+            }
+            vis.out();
             return I;
         }
         C[k] = ::span(n, intersect(I, C[k]), edges);
-        cerr << C[k].size() << endl;
+        // cerr << C[k].size() << endl;
         // cerr<<k<<endl;
         // for(auto e:I)cerr<<e.first<<" "<<e.second<<",";cerr<<endl;
         // cerr<<::rank(n, C[k])<<endl;
@@ -182,15 +204,38 @@ set< pair< int, int > > popular_arborescence(
             p++;
             C.emplace_back(edges);
         }
+        rep(i, C.size()) {
+            auto c = C[i];
+            if (i) {
+                c = diff(c, C[i - 1]);
+            }
+            for (auto [s, t]: c) {
+                // auto hex=[&](int x){
+                //     int s=x/16;
+                //     int t=x%16;
+                //     string s1=string{char(s>=10?s-10+'a':s+'0')};
+                //     string t1=string{char(t>=10?t-10+'a':t+'0')};
+                //     return s1+t1;
+                // };
+                // auto c=[&](int x){
+                //     return "#"+hex(255/10*i)+"00"+hex(255/10*(10-i));
+                // }
+                vis.change_penwidth(s, t, to_string((i+1)*1.5));
+                // vis.change_color(s, t, c(i));
+            }
+        }
+        vis.out();
     }
     cerr << "Not Found" << endl;
     return set< pair< int, int > >();
 }
+
 int main() {
     int n, m;
     cin >> n >> m;
     set< pair< int, int > > edges;
     map< pair< int, int >, int > weight;
+    vis=Visualizer(n);
     rep(i, m) {
         int s, t, w;
         cin >> s >> t >> w;
@@ -198,6 +243,18 @@ int main() {
         if(t==0)continue;
         edges.emplace(s, t);
         weight[make_pair(s, t)] = w;
+        vis.add_edge(s, t);
+        auto hex=[&](int x){
+            int s=x/16;
+            int t=x%16;
+            string s1=string{char(s>=10?s-10+'a':s+'0')};
+            string t1=string{char(t>=10?t-10+'a':t+'0')};
+            return s1+t1;
+        };
+        auto c=[&](int x){
+            return "#"+hex(255/10*(10-x))+"00"+hex(255/10*(x-1));
+        };
+        vis.change_color(s, t, c(w));
     }
     auto comp = [&](pair< int, int > a, pair< int, int > b) {
         return weight[a] > weight[b];
