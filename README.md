@@ -17,4 +17,7 @@ Kavitha, T., Makino, K., Schlotter, I., & Yokoi, Y. (2024). Arborescences, color
 ### ビジュアライズ
 赤いほど辺の優先度が高いとしている
 dashed edge は $E(C)$ に属する辺、 solid edge は $I$ に属する辺、辺の太さは $lev_C(e)$ の大きさを表す．
-<div><video controls src="https://github.com/hotman78/RA2024/raw/main/out.mp4" muted="false"></video></div>
+<div><video controls src="https://github.com/hotman78/RA2024/assets/10681598/d7c30b57-7542-44b3-a62d-63c47fc9a4fb" muted="false"></video></div>
+
+
+
